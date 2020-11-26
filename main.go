@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/cdimascio/aws-config-manager/cmd"
+	"github.com/cdimascio/aws-config-manager/cmd/color"
 	"log"
 	"os"
 	"regexp"
@@ -14,8 +15,8 @@ import (
 var re = regexp.MustCompile(`(.*)\[command options\](.*)`)
 
 func main() {
-	template := strings.Replace(cli.CommandHelpTemplate, "[arguments...]", "<setting>", -1)
-	templateNoOpts := strings.Replace(re.ReplaceAllString(cli.CommandHelpTemplate, "$1$2"), "[arguments...]", "<setting>", -1)
+	template := color.ColorBlue+strings.Replace(cli.CommandHelpTemplate, "[arguments...]", "<setting>", -1)
+	templateNoOpts := color.ColorBlue+strings.Replace(re.ReplaceAllString(cli.CommandHelpTemplate, "$1$2"), "[arguments...]", "<setting>", -1)
 	app := &cli.App{
 		Commands: []*cli.Command{
 			{

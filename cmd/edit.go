@@ -6,14 +6,12 @@ import (
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-	"path"
-	"strings"
 )
 
 func Edit(args cli.Args, fileType string) error {
 	var setting string
 	if args.Len() >= 1 {
-		setting = args.Get(1)
+		setting = args.First()
 		if !hasSetting(setting) {
 			return errors.New(fmt.Sprintf("setting '%s' does not exist", setting))
 		}
@@ -21,20 +19,12 @@ func Edit(args cli.Args, fileType string) error {
 		setting = current()
 	}
 
-	if !isValidSettingName(args.Get(1)) {
-		return errors.New("invalid setting name. cannot be 'config' or 'credential'")
+	file, err := pathFromType(setting, fileType)
+	if err != nil {
+		return err
 	}
 
-	var file string
-	if strings.HasPrefix(fileType, "conf") {
-		file = path.Join(configDir(), setting+ExtConfig)
-	} else if strings.HasPrefix(fileType, "cred"){
-		file = path.Join(configDir(), setting+ExtCredentials)
-	} else {
-		return errors.New("type must be one of conf[ig] or cred[entials]")
-	}
-	err := openFileInEditor(file)
-	return err
+	return openFileInEditor(file)
 }
 
 const DefaultEditor = "vi"

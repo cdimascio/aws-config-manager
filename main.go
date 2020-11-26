@@ -12,9 +12,9 @@ import (
 func main() {
 	app := &cli.App{
 
-		Usage: "AWS Config and Credentials Manager",
+		Usage:                 "AWS Config and Credentials Manager",
 		CustomAppHelpTemplate: template.AppTemplate,
-		Description: "Manages many .aws/credentials and .aws/config files as settings",
+		Description:           "Manages many .aws/credentials and .aws/config files as settings",
 		Commands: []*cli.Command{
 			{
 				Name:               "use",
@@ -71,6 +71,23 @@ func main() {
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 					return cmd.Edit(c.Args(), c.String("type"))
+				},
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "type",
+						Aliases:  []string{"t"},
+						Required: true,
+						Usage:    "the type, value must be 'cred[entials]' or 'conf[ig]'",
+					},
+				},
+			},
+			{
+				Name:               "cat",
+				Usage:              "cat a credentials or config file.",
+				CustomHelpTemplate: template.CmdTemplate,
+				Action: func(c *cli.Context) error {
+					cmd.Initialize()
+					return cmd.Cat(c.Args(), c.String("type"))
 				},
 				Flags: []cli.Flag{
 					&cli.StringFlag{

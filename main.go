@@ -2,27 +2,24 @@ package main
 
 import (
 	"github.com/cdimascio/aws-config-manager/cmd"
-	"github.com/cdimascio/aws-config-manager/cmd/color"
+	"github.com/cdimascio/aws-config-manager/template"
+	"github.com/urfave/cli/v2"
 	"log"
 	"os"
-	"regexp"
 	"sort"
-	"strings"
-
-	"github.com/urfave/cli/v2"
 )
 
-var re = regexp.MustCompile(`(.*)\[command options\](.*)`)
-
 func main() {
-	template := color.ColorBlue+strings.Replace(cli.CommandHelpTemplate, "[arguments...]", "<setting>", -1)
-	templateNoOpts := color.ColorBlue+strings.Replace(re.ReplaceAllString(cli.CommandHelpTemplate, "$1$2"), "[arguments...]", "<setting>", -1)
 	app := &cli.App{
+
+		Usage: "AWS Config and Credentials Manager",
+		CustomAppHelpTemplate: template.AppTemplate,
+		Description: "Manages many .aws/credentials and .aws/config files as settings",
 		Commands: []*cli.Command{
 			{
 				Name:               "use",
 				Usage:              "sets the current setting",
-				CustomHelpTemplate: templateNoOpts,
+				CustomHelpTemplate: template.CmdTemplateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 
@@ -37,7 +34,7 @@ func main() {
 				Name:               "current",
 				Usage:              "shows the current setting",
 				Aliases:            []string{"cur"},
-				CustomHelpTemplate: templateNoOpts,
+				CustomHelpTemplate: template.CmdTemplateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 					return cmd.Current()
@@ -47,7 +44,7 @@ func main() {
 				Name:               "list",
 				Aliases:            []string{"ls"},
 				Usage:              "list all settings",
-				CustomHelpTemplate: templateNoOpts,
+				CustomHelpTemplate: template.CmdTemplateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 					return cmd.List()
@@ -56,7 +53,7 @@ func main() {
 			{
 				Name:               "create",
 				Usage:              "creates a new empty setting.",
-				CustomHelpTemplate: templateNoOpts,
+				CustomHelpTemplate: template.CmdTemplateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 
@@ -69,8 +66,8 @@ func main() {
 			},
 			{
 				Name:               "edit",
-				Usage:              "edits credentials or config file for the current <setting> or the specified <setting>. ",
-				CustomHelpTemplate: template,
+				Usage:              "edits a credentials or config file.",
+				CustomHelpTemplate: template.CmdTemplate,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 					return cmd.Edit(c.Args(), c.String("type"))
@@ -88,7 +85,7 @@ func main() {
 				Name:               "remove",
 				Usage:              "removes a setting",
 				Aliases:            []string{"rm"},
-				CustomHelpTemplate: templateNoOpts,
+				CustomHelpTemplate: template.CmdTemplateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 

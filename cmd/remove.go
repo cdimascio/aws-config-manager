@@ -9,10 +9,6 @@ import (
 )
 
 func Remove(args cli.Args) error {
-	if args == nil || args.Len() < 1 {
-		return errors.New("remove <setting>")
-	}
-
 	setting := args.First()
 
 	current := current()

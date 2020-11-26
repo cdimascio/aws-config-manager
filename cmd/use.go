@@ -9,10 +9,6 @@ import (
 )
 
 func Use(args cli.Args) error {
-	if args == nil || args.Len() < 1 {
-		return errors.New("setting required. e.g. use <setting>")
-	}
-
 	setting := args.First()
 	if !hasSetting(setting) {
 		return errors.New(fmt.Sprintf("setting '%s' does not exist", setting))

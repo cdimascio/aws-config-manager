@@ -7,20 +7,12 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 )
 
-func Edit(args cli.Args) error {
-	if args == nil || args.Len() < 1 {
-		return errors.New("edit [config|credentials] [<setting>]")
-	}
-
-	fileType := args.First()
-	if !isValidType(args.First()) {
-		return errors.New("edit [config|credentials] [<setting>]")
-	}
-
+func Edit(args cli.Args, fileType string) error {
 	var setting string
-	if args.Len() > 1 {
+	if args.Len() >= 1 {
 		setting = args.Get(1)
 		if !hasSetting(setting) {
 			return errors.New(fmt.Sprintf("setting '%s' does not exist", setting))
@@ -34,10 +26,12 @@ func Edit(args cli.Args) error {
 	}
 
 	var file string
-	if fileType == "config" {
+	if strings.HasPrefix(fileType, "conf") {
 		file = path.Join(configDir(), setting+ExtConfig)
-	} else {
+	} else if strings.HasPrefix(fileType, "cred"){
 		file = path.Join(configDir(), setting+ExtCredentials)
+	} else {
+		return errors.New("type must be one of conf[ig] or cred[entials]")
 	}
 	err := openFileInEditor(file)
 	return err

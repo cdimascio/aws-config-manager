@@ -4,77 +4,97 @@ import (
 	"github.com/cdimascio/aws-config-manager/cmd"
 	"log"
 	"os"
+	"regexp"
 	"sort"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
 
-const ConfigDir="$HOME/.aws_cred_man"
+var re = regexp.MustCompile(`(.*)\[command options\](.*)`)
 
 func main() {
+	template := strings.Replace(cli.CommandHelpTemplate, "[arguments...]", "<setting>", -1)
+	templateNoOpts := strings.Replace(re.ReplaceAllString(cli.CommandHelpTemplate, "$1$2"), "[arguments...]", "<setting>", -1)
 	app := &cli.App{
-		//Flags: []cli.Flag{
-		//	&cli.StringFlag{
-		//		Name:    "lang",
-		//		Aliases: []string{"l"},
-		//		Value:   "english",
-		//		Usage:   "Language for the greeting",
-		//	},
-		//	&cli.StringFlag{
-		//		Name:    "config",
-		//		Aliases: []string{"c"},
-		//		Usage:   "Load configuration from `FILE`",
-		//	},
-		//},
 		Commands: []*cli.Command{
 			{
-				Name:  "use",
-				Usage: "use <setting>",
+				Name:               "use",
+				Usage:              "sets the current setting",
+				CustomHelpTemplate: templateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
+
+					if c.Args().Len() < 1 {
+						return cli.ShowCommandHelp(c, "use")
+					}
+
 					return cmd.Use(c.Args())
 				},
 			},
 			{
-				Name:  "current",
-				Usage: "current",
-				Aliases: []string{"cur"},
+				Name:               "current",
+				Usage:              "shows the current setting",
+				Aliases:            []string{"cur"},
+				CustomHelpTemplate: templateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 					return cmd.Current()
 				},
 			},
 			{
-				Name:    "list",
-				Aliases: []string{"ls"},
-				Usage:   "add a task to the list",
+				Name:               "list",
+				Aliases:            []string{"ls"},
+				Usage:              "list all settings",
+				CustomHelpTemplate: templateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
 					return cmd.List()
 				},
 			},
 			{
-				Name:  "create",
-				Usage: "create",
+				Name:               "create",
+				Usage:              "creates a new empty setting.",
+				CustomHelpTemplate: templateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
+
+					if c.Args().Len() < 1 {
+						return cli.ShowCommandHelp(c, "create")
+					}
+
 					return cmd.Create(c.Args())
 				},
 			},
 			{
-				Name:  "edit",
-				Usage: "edit",
+				Name:               "edit",
+				Usage:              "edits credentials or config file for the current <setting> or the specified <setting>. ",
+				CustomHelpTemplate: template,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
-					return cmd.Edit(c.Args())
+					return cmd.Edit(c.Args(), c.String("type"))
+				},
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "type",
+						Aliases:  []string{"t"},
+						Required: true,
+						Usage:    "the type, value must be 'cred[entials]' or 'conf[ig]'",
+					},
 				},
 			},
 			{
-				Name:  "remove",
-				Usage: "remove",
-				Aliases: []string{"rm"},
+				Name:               "remove",
+				Usage:              "removes a setting",
+				Aliases:            []string{"rm"},
+				CustomHelpTemplate: templateNoOpts,
 				Action: func(c *cli.Context) error {
 					cmd.Initialize()
+
+					if c.Args().Len() < 1 {
+						return cli.ShowCommandHelp(c, "remove")
+					}
+
 					return cmd.Remove(c.Args())
 				},
 			},

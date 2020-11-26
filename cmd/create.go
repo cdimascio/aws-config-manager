@@ -9,10 +9,6 @@ import (
 )
 
 func Create(args cli.Args) error {
-	if args.Len() < 1 {
-		return errors.New("create <setting>")
-	}
-
 	setting := args.First()
 	if !isValidSettingName(setting) {
 		return errors.New("invalid setting. setting cannot be 'config' or 'credentials'")

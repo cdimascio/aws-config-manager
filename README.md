@@ -46,7 +46,11 @@ EXAMPLES:
    acm edit -t conf my-config
 ```
 
-**What is a setting?** A setting is a name use to identify a pair of aws config and credentials files. AWS enables you to use a single pair e.g. ~/.aws/crendentials and ~/.aws/config. This library allows you manage multiple pairs or 'settings'.
+**What is a setting?**
+
+A setting is a name used to identify a pair of aws config and credentials files. The first time you use `acm`, a `default` setting is created. The `default` setting is a reference to your current `~/.aws/credentials` and `~/.aws/config`. To create additional settings, run `acm create my_setting`, then `acm edit -t config my_setting` and `acm edit -t creds my_setting` to edit the config and credentials file for the `my_setting` setting.
+
+AWS enables you to use a single pair e.g. ~/.aws/crendentials and ~/.aws/config. This library allows you manage multiple pairs or 'settings'.
 
 
 

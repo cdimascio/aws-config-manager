@@ -2,7 +2,7 @@
 
 Manage multiple AWS credentials and config file pairs.
 
-Working with a variety of AWS configurations and want to manage their configurations separately. Now you can.
+Do you work with a variety of AWS configs/credentials and want to manage them separately? Now you can.
 
 ## Install
 

@@ -1,6 +1,6 @@
 # aws-config-manager
 
-Manage multiple paris of AWS credentials and config files.
+Manage multiple AWS credentials and config file pairs.
 
 Working with a variety of AWS configurations and want to manage their configurations separately. Now you can.
 
